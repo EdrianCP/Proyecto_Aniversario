@@ -98,11 +98,12 @@
     <div id="modal-admin-capsula" class="modal-flotante">
         <div class="caja-modal" style="border-color: #d4af37;">
             <h2 style="color: #d4af37; margin-top: 0;">🕵️‍♂️ Acceso Admin: Cápsula</h2>
-            <p style="color: #aaa; font-size: 0.9rem;">Escribe aquí la carta que ella verá el 4 de Julio de 2026.</p>
+            <p style="color: #aaa; font-size: 0.9rem;">Edita aquí la carta que ella verá el 4 de Julio de 2026.</p>
             
             <form id="form-admin-capsula">
                 <textarea id="texto-secreto" rows="8" placeholder="Escribe tu mensaje romántico aquí..." required style="width: 90%;"></textarea><br>
-                <p style="color: #fff; font-size: 0.9rem; text-align: left; margin-left: 5%;">Añadir foto secreta (Opcional):</p>
+                <p id="aviso-foto-guardada" style="color: #4CAF50; font-size: 0.8rem; display: none; text-align: left; margin-left: 5%;">✅ Ya hay una foto secreta guardada en la base de datos.</p>
+                <p style="color: #fff; font-size: 0.9rem; text-align: left; margin-left: 5%; margin-top: 5px;">Añadir/Reemplazar foto (Opcional):</p>
                 <input type="file" id="foto-secreta" accept="image/*"><br>
                 <button type="submit" id="btn-guardar-capsula" style="width: 100%; margin-top: 15px;">🔒 Sellar Cápsula en Base de Datos</button>
             </form>
@@ -220,35 +221,57 @@
             socket.onclose = function() { document.getElementById('indicador-en-vivo').style.display = 'none'; setTimeout(conectarWebSocket, 3000); };
         }
 
-        // --- SISTEMA DE LA CÁPSULA (NUEVO) ---
+        // --- SISTEMA DE LA CÁPSULA ---
         async function intentarAbrirCapsula() {
             try {
                 const res = await fetch(`${API_URL}/abrir-capsula`);
                 const data = await res.json();
                 
                 if (data.status === "bloqueado") {
-                    // Animación de Candado Cerrado
                     const icono = document.getElementById('icono-capsula');
-                    icono.style.transform = "rotate(15deg)";
-                    setTimeout(() => icono.style.transform = "rotate(-15deg)", 100);
-                    setTimeout(() => icono.style.transform = "rotate(10deg)", 200);
-                    setTimeout(() => icono.style.transform = "rotate(0deg)", 300);
+                    icono.style.transform = "rotate(15deg)"; setTimeout(() => icono.style.transform = "rotate(-15deg)", 100);
+                    setTimeout(() => icono.style.transform = "rotate(10deg)", 200); setTimeout(() => icono.style.transform = "rotate(0deg)", 300);
                     alert(data.mensaje);
                 } else {
-                    // ¡ABIERTO! Modificamos el HTML de la tarjeta para revelar el secreto
                     document.getElementById('tarjeta-capsula').style.cursor = "default";
-                    document.getElementById('tarjeta-capsula').onclick = null; // Quitamos el clic
-                    
+                    document.getElementById('tarjeta-capsula').onclick = null; 
                     let htmlRevelado = `<div style="font-size: 4rem;">🔓</div><h3 style="color: #d4af37; font-size: 2rem;">¡Feliz Aniversario!</h3>`;
-                    if (data.data.foto_url) {
-                        htmlRevelado += `<img src="${data.data.foto_url}" style="width:100%; border-radius:10px; margin-top:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">`;
-                    }
+                    if (data.data.foto_url) { htmlRevelado += `<img src="${data.data.foto_url}" style="width:100%; border-radius:10px; margin-top:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">`; }
                     htmlRevelado += `<p style="color: white; white-space: pre-wrap; text-align: justify; margin-top: 25px; font-size: 1.1rem; line-height: 1.6; font-family: 'Segoe UI', Tahoma, sans-serif;">${data.data.mensaje_secreto}</p>`;
-                    
                     document.getElementById('tarjeta-capsula').innerHTML = htmlRevelado;
                 }
-            } catch (e) { alert("El servidor del tiempo está dormido. Intenta de nuevo en unos segundos."); }
+            } catch (e) {}
         }
+
+        // --- EL HUEVO DE PASCUA ACTUALIZADO ---
+        document.getElementById('form-estado').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const txt = document.getElementById('input-estado').value;
+            
+            if (txt === "0407-CAPSULA") {
+                document.getElementById('input-estado').value = 'Abriendo bóveda...';
+                
+                // Antes de abrir el panel, le pide a Render lo que guardaste antes
+                try {
+                    const res = await fetch(`${API_URL}/admin-ver-capsula`);
+                    const data = await res.json();
+                    if(data.status === "ok") {
+                        document.getElementById('texto-secreto').value = data.mensaje;
+                        if(data.foto) {
+                            document.getElementById('aviso-foto-guardada').style.display = 'block';
+                        } else {
+                            document.getElementById('aviso-foto-guardada').style.display = 'none';
+                        }
+                    }
+                } catch (e) {}
+                
+                document.getElementById('input-estado').value = '';
+                document.getElementById('modal-admin-capsula').style.display = 'flex';
+            } else {
+                enviarEstadoRapido(txt);
+                document.getElementById('input-estado').value = '';
+            }
+        });
 
         // Guardar desde el Panel Secreto Admin
         document.getElementById('form-admin-capsula').addEventListener('submit', async (e) => {
@@ -268,20 +291,7 @@
             btn.innerText = "🔒 Sellar Cápsula en Base de Datos"; btn.disabled = false;
         });
 
-        // Intercepción del Huevo de Pascua en la barra de Estado
-        document.getElementById('form-estado').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const txt = document.getElementById('input-estado').value;
-            if (txt === "0407-CAPSULA") {
-                document.getElementById('input-estado').value = '';
-                document.getElementById('modal-admin-capsula').style.display = 'flex';
-            } else {
-                enviarEstadoRapido(txt);
-                document.getElementById('input-estado').value = '';
-            }
-        });
-
-        // --- MASCOTA Y TIENDA (SIN CAMBIOS) ---
+        // --- MASCOTA Y TIENDA ---
         function procesarEstadoMascota(datos) {
             if (perritoDurmiendo) return; 
             document.getElementById('barra-hambre').value = datos.hambre; document.getElementById('barra-felicidad').value = datos.felicidad;
