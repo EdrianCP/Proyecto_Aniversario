@@ -8,7 +8,8 @@
         body { background-color: #121212; color: #ffffff; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; min-height: 100vh; overflow-x: hidden; }
         #pantalla-bloqueo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #121212; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.8s; }
         .pin-caja { background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 15px; border: 1px solid #d4af37; text-align: center; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
-        .pin-input { font-size: 2rem; padding: 10px; width: 150px; text-align: center; letter-spacing: 15px; border-radius: 10px; border: 2px solid #333; background: #1a1a1a; color: #d4af37; margin-top: 20px; outline: none; }
+        .pin-input { font-size: 2rem; padding: 10px; width: 150px; text-align: center; letter-spacing: 15px; border-radius: 10px; border: 2px solid #333; background: #1a1a1a; color: #d4af37; margin-top: 20px; outline: none; display: block; margin-left: auto; margin-right: auto; }
+        .selector-usuario { margin-top: 15px; padding: 10px; background: #333; color: white; border: 1px solid #d4af37; border-radius: 5px; width: 100%; font-size: 1rem; cursor: pointer; }
         .error-anim { animation: temblor 0.4s; border-color: #ff4c4c !important; }
         @keyframes temblor { 0% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } 100% { transform: translateX(0); } }
 
@@ -29,7 +30,6 @@
         @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
         
         .caja-dash { background: rgba(255, 255, 255, 0.05); border: 1px solid #d4af37; border-radius: 15px; padding: 25px 20px; text-align: center; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: background 0.5s ease; background-size: cover; background-position: center; }
-        
         .grid-barras { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; margin-top: 20px; width: 100%; z-index: 2; position: relative; }
         .grid-barras p { margin: 0 0 5px 0; font-size: 0.9rem; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); }
         progress { width: 100%; height: 12px; border-radius: 10px; }
@@ -40,7 +40,6 @@
         .cara-mascota { font-size: 5rem; cursor: pointer; transition: 0.1s; user-select: none; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5)); }
         .cara-mascota:active { transform: scale(0.9); }
         @keyframes respirar { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        
         .corazoncito { position: absolute; font-size: 1.5rem; pointer-events: none; animation: flotar 1s ease-out forwards; z-index: 10; }
         @keyframes flotar { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-50px) scale(1.5); } }
         
@@ -69,6 +68,12 @@
         <div class="pin-caja">
             <h1 style="font-size: 4rem; margin:0;">🔒</h1>
             <h2 style="margin-top: 10px;">Código de Acceso</h2>
+            
+            <select id="select-usuario" class="selector-usuario">
+                <option value="Suki">Soy Suki 🌸</option>
+                <option value="Kirei">Soy Kirei ✨</option>
+            </select>
+
             <input type="password" id="input-pin" class="pin-input" maxlength="4" placeholder="••••">
             <p id="mensaje-error" style="color: #ff4c4c; display: none; font-weight: bold; margin-top: 15px;">Código Incorrecto</p>
         </div>
@@ -78,7 +83,6 @@
         <div class="caja-modal">
             <h2 style="color: #4CAF50; margin-top: 0;">🛒 Tienda</h2>
             <p style="color: #aaa; margin-bottom: 20px;">Monedas: <span id="tienda-monedas" style="color:#ffd700; font-weight:bold;">0</span> 🪙</p>
-            
             <div class="item-tienda">
                 <div style="text-align: left;"><h4 style="margin: 0; color: #fff;">Fondo: Bosque 🌳</h4></div>
                 <button id="btn-item-Bosque" style="background: #4CAF50;" onclick="comprarItem('Fondo Bosque', 'fondo', 15, 'linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(\'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=800&auto=format&fit=crop\')')">15 🪙</button>
@@ -98,12 +102,9 @@
     <div id="modal-admin-capsula" class="modal-flotante">
         <div class="caja-modal" style="border-color: #d4af37;">
             <h2 style="color: #d4af37; margin-top: 0;">🕵️‍♂️ Acceso Admin: Cápsula</h2>
-            <p style="color: #aaa; font-size: 0.9rem;">Edita aquí la carta que ella verá el 4 de Julio de 2026.</p>
-            
             <form id="form-admin-capsula">
                 <textarea id="texto-secreto" rows="8" placeholder="Escribe tu mensaje romántico aquí..." required style="width: 90%;"></textarea><br>
-                <p id="aviso-foto-guardada" style="color: #4CAF50; font-size: 0.8rem; display: none; text-align: left; margin-left: 5%;">✅ Ya hay una foto secreta guardada en la base de datos.</p>
-                <p style="color: #fff; font-size: 0.9rem; text-align: left; margin-left: 5%; margin-top: 5px;">Añadir/Reemplazar foto (Opcional):</p>
+                <p id="aviso-foto-guardada" style="color: #4CAF50; font-size: 0.8rem; display: none; text-align: left; margin-left: 5%;">✅ Ya hay una foto secreta guardada.</p>
                 <input type="file" id="foto-secreta" accept="image/*"><br>
                 <button type="submit" id="btn-guardar-capsula" style="width: 100%; margin-top: 15px;">🔒 Sellar Cápsula en Base de Datos</button>
             </form>
@@ -142,14 +143,12 @@
                 <h2 style="z-index: 2;">Nuestra Mascota</h2>
                 <div class="mascota-fondo" id="zona-mascota"><div id="cara-mascota" class="cara-mascota" onclick="acariciar(event)">🐶</div></div>
                 <p id="texto-info-mascota" style="color: #e0e0e0; font-size: 0.9rem; font-weight: bold; z-index: 2; text-shadow: 1px 1px 4px #000;">¡Toca al perrito para ganar monedas!</p>
-
                 <div class="grid-barras">
                     <div><p>Hambre</p><progress id="barra-hambre" value="0" max="100"></progress></div>
                     <div><p>Felicidad</p><progress id="barra-felicidad" value="0" max="100"></progress></div>
                     <div><p>Energía</p><progress id="barra-energia" value="0" max="100" style="accent-color:#4CAF50;"></progress></div>
                     <div><p>Limpieza</p><progress id="barra-higiene" value="0" max="100" style="accent-color:#2196F3;"></progress></div>
                 </div>
-
                 <div style="margin-top: 20px; z-index: 2; position: relative;">
                     <button id="btn-comer" onclick="cuidar('alimentar')">🍖 Comer</button>
                     <button id="btn-jugar" onclick="cuidar('jugar')">🎾 Jugar</button>
@@ -157,7 +156,6 @@
                     <button id="btn-dormir" onclick="tomarSiesta()" style="background-color: #9C27B0; color: white;">💤 Siesta</button>
                 </div>
             </div>
-
             <div class="caja-dash">
                 <h2>Pensando en Ti</h2>
                 <button id="btn-corazon" style="font-size:6rem; background:none; border:none; padding:0; transition: transform 0.2s; cursor: pointer; margin: 30px 0;" onclick="teExtrano()">❤️</button>
@@ -189,9 +187,19 @@
         const WS_URL = "wss://servidor-aniversario-suki.onrender.com/ws";
         const PIN_CORRECTO = "0407";
         let miInventario = []; let misMonedas = 0; let perritoDurmiendo = false; let socket;
+        let miIdentidad = "Suki"; // Variable Global de Identidad
+
+        // Recordar identidad guardada
+        if(localStorage.getItem('identidad')) {
+            document.getElementById('select-usuario').value = localStorage.getItem('identidad');
+        }
 
         document.getElementById('input-pin').addEventListener('input', function() {
             if (this.value === PIN_CORRECTO) {
+                // Guardar quién entró
+                miIdentidad = document.getElementById('select-usuario').value;
+                localStorage.setItem('identidad', miIdentidad);
+
                 document.getElementById('pantalla-bloqueo').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('pantalla-bloqueo').style.display = 'none';
@@ -221,10 +229,10 @@
             socket.onclose = function() { document.getElementById('indicador-en-vivo').style.display = 'none'; setTimeout(conectarWebSocket, 3000); };
         }
 
-        // --- SISTEMA DE LA CÁPSULA ---
         async function intentarAbrirCapsula() {
             try {
-                const res = await fetch(`${API_URL}/abrir-capsula`);
+                // Agregamos quién intenta abrirla en la URL
+                const res = await fetch(`${API_URL}/abrir-capsula?usuario=${miIdentidad}`);
                 const data = await res.json();
                 
                 if (data.status === "bloqueado") {
@@ -243,28 +251,20 @@
             } catch (e) {}
         }
 
-        // --- EL HUEVO DE PASCUA ACTUALIZADO ---
         document.getElementById('form-estado').addEventListener('submit', async (e) => {
             e.preventDefault();
             const txt = document.getElementById('input-estado').value;
-            
             if (txt === "0407-CAPSULA") {
                 document.getElementById('input-estado').value = 'Abriendo bóveda...';
-                
-                // Antes de abrir el panel, le pide a Render lo que guardaste antes
                 try {
                     const res = await fetch(`${API_URL}/admin-ver-capsula`);
                     const data = await res.json();
                     if(data.status === "ok") {
                         document.getElementById('texto-secreto').value = data.mensaje;
-                        if(data.foto) {
-                            document.getElementById('aviso-foto-guardada').style.display = 'block';
-                        } else {
-                            document.getElementById('aviso-foto-guardada').style.display = 'none';
-                        }
+                        if(data.foto) { document.getElementById('aviso-foto-guardada').style.display = 'block'; } 
+                        else { document.getElementById('aviso-foto-guardada').style.display = 'none'; }
                     }
                 } catch (e) {}
-                
                 document.getElementById('input-estado').value = '';
                 document.getElementById('modal-admin-capsula').style.display = 'flex';
             } else {
@@ -273,25 +273,18 @@
             }
         });
 
-        // Guardar desde el Panel Secreto Admin
         document.getElementById('form-admin-capsula').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('btn-guardar-capsula');
-            btn.innerText = "Encriptando..."; btn.disabled = true;
-            
-            const form = new FormData();
-            form.append("mensaje", document.getElementById('texto-secreto').value);
-            
+            const btn = document.getElementById('btn-guardar-capsula'); btn.innerText = "Encriptando..."; btn.disabled = true;
+            const form = new FormData(); form.append("mensaje", document.getElementById('texto-secreto').value);
             const archivoInput = document.getElementById('foto-secreta');
             if (archivoInput.files.length > 0) { form.append("archivo", archivoInput.files[0]); }
-            
             await fetch(`${API_URL}/guardar-capsula`, { method: 'POST', body: form });
             alert("¡Cápsula sellada con éxito en la base de datos!");
             document.getElementById('modal-admin-capsula').style.display = 'none';
             btn.innerText = "🔒 Sellar Cápsula en Base de Datos"; btn.disabled = false;
         });
 
-        // --- MASCOTA Y TIENDA ---
         function procesarEstadoMascota(datos) {
             if (perritoDurmiendo) return; 
             document.getElementById('barra-hambre').value = datos.hambre; document.getElementById('barra-felicidad').value = datos.felicidad;
@@ -324,7 +317,7 @@
                     clearInterval(intervalo); perritoDurmiendo = false;
                     document.getElementById('texto-info-mascota').innerText = "¡Toca al perrito para ganar monedas!";
                     document.getElementById('btn-dormir').disabled = false;
-                    const form = new FormData(); form.append("accion", "dormir");
+                    const form = new FormData(); form.append("accion", "dormir"); form.append("usuario", miIdentidad);
                     const res = await fetch(`${API_URL}/cuidar-mascota`, { method: 'POST', body: form });
                     const data = await res.json(); procesarEstadoMascota(data);
                 }
@@ -380,7 +373,8 @@
         async function teExtrano() {
             const btn = document.getElementById('btn-corazon'); btn.style.transform = "scale(1.3)"; setTimeout(() => btn.style.transform = "scale(1)", 200);
             const txt = document.getElementById('count-extrano'); txt.innerText = parseInt(txt.innerText) + 1;
-            await fetch(`${API_URL}/te-extrano`, { method: 'POST' });
+            const form = new FormData(); form.append("usuario", miIdentidad);
+            await fetch(`${API_URL}/te-extrano`, { method: 'POST', body: form });
         }
 
         let bloqueadorClick = false;
@@ -390,19 +384,20 @@
             const rect = zona.getBoundingClientRect(); corazon.style.left = `${e.clientX - rect.left - 10}px`; corazon.style.top = `${e.clientY - rect.top - 10}px`;
             zona.appendChild(corazon); setTimeout(() => corazon.remove(), 1000);
             bloqueadorClick = true; setTimeout(() => bloqueadorClick = false, 500);
-            const form = new FormData(); form.append("accion", "acariciar");
+            const form = new FormData(); form.append("accion", "acariciar"); form.append("usuario", miIdentidad);
             await fetch(`${API_URL}/cuidar-mascota`, { method: 'POST', body: form });
         }
 
         async function cuidar(accion) {
-            const form = new FormData(); form.append("accion", accion);
+            const form = new FormData(); form.append("accion", accion); form.append("usuario", miIdentidad);
             await fetch(`${API_URL}/cuidar-mascota`, { method: 'POST', body: form });
         }
 
         document.getElementById('formulario-foto').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn-subir'); btn.innerText = "Subiendo..."; btn.disabled = true;
-            const form = new FormData(); form.append("archivo", document.getElementById('archivo-foto').files[0]); form.append("descripcion", document.getElementById('desc-foto').value);
+            const form = new FormData(); form.append("archivo", document.getElementById('archivo-foto').files[0]); 
+            form.append("descripcion", document.getElementById('desc-foto').value); form.append("usuario", miIdentidad);
             await fetch(`${API_URL}/subir-foto`, { method: 'POST', body: form });
             document.getElementById('formulario-foto').reset(); btn.innerText = "Guardar Momento"; btn.disabled = false; cargarDatos();
         });
@@ -413,7 +408,7 @@
 
         async function enviarEstadoRapido(txt) {
             document.getElementById('mostrar-estado').innerText = txt;
-            const form = new FormData(); form.append("nueva_emocion", txt);
+            const form = new FormData(); form.append("nueva_emocion", txt); form.append("usuario", miIdentidad);
             await fetch(`${API_URL}/actualizar-estado`, { method: 'POST', body: form });
         }
     </script>
