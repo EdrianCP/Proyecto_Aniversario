@@ -6,15 +6,16 @@ from sqlalchemy.orm import sessionmaker
 from datetime import date, datetime
 import time
 import requests
+import os
 
-# --- 1. TUS CREDENCIALES EXACTAS DE LA NUBE ---
-DB_URL = "postgresql://postgres.qccrkowdfpyfeomazbop:MMTCsM8Gnu%25Spa$@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
+# --- 1. CREDENCIALES INVISIBLES (VARIABLES DE ENTORNO) ---
+DB_URL = os.getenv("DB_URL")
 engine = create_engine(DB_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-SUPABASE_URL = "https://qccrkowdfpyfeomazbop.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjY3Jrb3dkZnB5ZmVvbWF6Ym9wIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjkwNDEwNSwiZXhwIjoyMDkyNDgwMTA1fQ.eT-ToWiug_XPCHm4Ih4NDGkzZs3WWoVyODT6zxZl-Is"
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # --- 2. TABLAS ---
 class Foto(Base):
@@ -43,12 +44,10 @@ def procesar_logica_tiempo(estado):
     ahora = datetime.now()
     hoy = date.today().isoformat()
     
-    # 1. Reinicio diario del corazón a la medianoche
     if estado.fecha_reinicio != hoy:
         estado.te_extrano_count = 0
         estado.fecha_reinicio = hoy
 
-    # 2. Desgaste de la mascota por el paso de las horas
     ultima_vez = datetime.fromisoformat(estado.ultima_interaccion)
     horas_pasadas = (ahora - ultima_vez).total_seconds() / 3600
     
