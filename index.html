@@ -7,14 +7,12 @@
     <style>
         body { background-color: #121212; color: #ffffff; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; min-height: 100vh; overflow-x: hidden; }
         
-        /* Bloqueo */
         #pantalla-bloqueo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #121212; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.8s; }
         .pin-caja { background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 15px; border: 1px solid #d4af37; text-align: center; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
         .pin-input { font-size: 2rem; padding: 10px; width: 150px; text-align: center; letter-spacing: 15px; border-radius: 10px; border: 2px solid #333; background: #1a1a1a; color: #d4af37; margin-top: 20px; outline: none; }
         .error-anim { animation: temblor 0.4s; border-color: #ff4c4c !important; }
         @keyframes temblor { 0% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } 100% { transform: translateX(0); } }
 
-        /* General */
         #contenido-app { display: none; opacity: 0; flex-direction: column; align-items: center; padding: 40px 20px; transition: 1s; }
         .contenedor { text-align: center; padding: 30px; border-radius: 15px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(212, 175, 55, 0.3); margin-bottom: 30px; width: 90%; max-width: 600px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         h1, h2, h3 { color: #d4af37; margin-top: 0; }
@@ -29,27 +27,32 @@
         .btn-rapido { background: rgba(255,255,255,0.08); color: white; border: 1px solid #d4af37; border-radius: 20px; padding: 8px 15px; font-size: 0.9rem; }
         .btn-rapido:hover { background: rgba(212,175,55,0.2); }
 
-        /* Dashboards */
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 90%; max-width: 900px; margin-bottom: 30px; }
         @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
         .caja-dash { background: rgba(255, 255, 255, 0.05); border: 1px solid #d4af37; border-radius: 15px; padding: 25px 20px; text-align: center; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         
-        /* Mascota y Corazón */
         .grid-barras { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; margin-top: 20px; width: 100%; }
         progress { width: 100%; height: 12px; border-radius: 10px; }
         progress::-webkit-progress-bar { background-color: #333; border-radius: 10px; }
         progress::-webkit-progress-value { background-color: #d4af37; border-radius: 10px; transition: width 0.5s ease; }
         
-        .mascota-fondo { background: radial-gradient(circle, rgba(212,175,55,0.2) 0%, rgba(0,0,0,0) 70%); width: 150px; height: 150px; display: flex; justify-content: center; align-items: center; border-radius: 50%; margin: 0 auto; position: relative; animation: respirar 3s infinite ease-in-out; }
+        .mascota-fondo { background: radial-gradient(circle, rgba(212,175,55,0.2) 0%, rgba(0,0,0,0) 70%); width: 150px; height: 150px; display: flex; justify-content: center; align-items: center; border-radius: 50%; margin: 0 auto; position: relative; animation: respirar 3s infinite ease-in-out; transition: background 0.5s; }
         .cara-mascota { font-size: 5rem; cursor: pointer; transition: 0.1s; user-select: none; }
         .cara-mascota:active { transform: scale(0.9); }
         @keyframes respirar { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         
         .corazoncito { position: absolute; font-size: 1.5rem; pointer-events: none; animation: flotar 1s ease-out forwards; z-index: 10; }
         @keyframes flotar { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-50px) scale(1.5); } }
-        .banco-monedas { position: absolute; top: 15px; right: 20px; font-size: 1.2rem; font-weight: bold; color: #ffd700; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 10px; border: 1px solid #ffd700; }
-
-        /* Galería */
+        
+        /* Estilos de Tienda */
+        .banco-monedas { position: absolute; top: 15px; right: 15px; display: flex; gap: 10px; align-items: center; }
+        .etiqueta-monedas { font-size: 1.2rem; font-weight: bold; color: #ffd700; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 10px; border: 1px solid #ffd700; }
+        .btn-tienda { background-color: #4CAF50; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; border: 1px solid #fff; box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); padding: 0; margin: 0; }
+        
+        #modal-tienda { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .caja-tienda { background: #1a1a1a; padding: 25px; border-radius: 15px; border: 1px solid #4CAF50; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 0 30px rgba(76, 175, 80, 0.3); }
+        .item-tienda { background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
         .galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 90%; max-width: 1000px; margin-top: 20px; }
         .foto-container { position: relative; height: 300px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .foto-item { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
@@ -68,6 +71,39 @@
             <h2 style="margin-top: 10px;">Código de Acceso</h2>
             <input type="password" id="input-pin" class="pin-input" maxlength="4" placeholder="••••">
             <p id="mensaje-error" style="color: #ff4c4c; display: none; font-weight: bold; margin-top: 15px;">Código Incorrecto</p>
+        </div>
+    </div>
+
+    <div id="modal-tienda">
+        <div class="caja-tienda">
+            <h2 style="color: #4CAF50; margin-top: 0;">🛒 Tienda de Mascotas</h2>
+            <p style="color: #aaa; margin-bottom: 20px;">Monedas actuales: <span id="tienda-monedas" style="color:#ffd700; font-weight:bold;">0</span> 🪙</p>
+            
+            <div class="item-tienda">
+                <div style="text-align: left;">
+                    <h4 style="margin: 0; color: #fff;">Fondo: Parque 🌳</h4>
+                    <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: #aaa;">Ambiente verde y fresco.</p>
+                </div>
+                <button id="btn-item-Parque" style="background: #4CAF50;" onclick="comprarItem('Fondo Parque', 'fondo', 15, 'radial-gradient(circle, rgba(76,175,80,0.4) 0%, rgba(0,0,0,0) 70%)')">15 🪙</button>
+            </div>
+
+            <div class="item-tienda">
+                <div style="text-align: left;">
+                    <h4 style="margin: 0; color: #fff;">Fondo: Océano 🌊</h4>
+                    <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: #aaa;">Sonido de las olas.</p>
+                </div>
+                <button id="btn-item-Océano" style="background: #2196F3;" onclick="comprarItem('Fondo Océano', 'fondo', 30, 'radial-gradient(circle, rgba(33,150,243,0.4) 0%, rgba(0,0,0,0) 70%)')">30 🪙</button>
+            </div>
+
+            <div class="item-tienda">
+                <div style="text-align: left;">
+                    <h4 style="margin: 0; color: #fff;">Fondo: Galaxia 🌌</h4>
+                    <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: #aaa;">Viaje por las estrellas.</p>
+                </div>
+                <button id="btn-item-Galaxia" style="background: #9C27B0;" onclick="comprarItem('Fondo Galaxia', 'fondo', 50, 'radial-gradient(circle, rgba(156,39,176,0.4) 0%, rgba(0,0,0,0) 70%)')">50 🪙</button>
+            </div>
+
+            <button onclick="cerrarTienda()" style="margin-top:20px; background:transparent; border: 1px solid #ff4c4c; color:#ff4c4c; width: 100%;">Cerrar Tienda</button>
         </div>
     </div>
 
@@ -93,9 +129,13 @@
         </div>
 
         <div class="dashboard-grid">
-            
             <div class="caja-dash">
-                <div class="banco-monedas"><span id="txt-monedas">0</span> 🪙</div>
+                
+                <div class="banco-monedas">
+                    <div class="etiqueta-monedas"><span id="txt-monedas">0</span> 🪙</div>
+                    <button class="btn-tienda" onclick="abrirTienda()" title="Tienda">🛒</button>
+                </div>
+                
                 <h2>Nuestra Mascota</h2>
                 
                 <div class="mascota-fondo" id="zona-mascota">
@@ -158,6 +198,8 @@
     <script>
         const API_URL = "https://servidor-aniversario-suki.onrender.com";
         const PIN_CORRECTO = "0407";
+        let miInventario = []; // Memoria de compras
+        let misMonedas = 0;
 
         // Login
         document.getElementById('input-pin').addEventListener('input', function() {
@@ -166,9 +208,8 @@
                     document.getElementById('pantalla-bloqueo').style.opacity = '0';
                     setTimeout(() => {
                         document.getElementById('pantalla-bloqueo').style.display = 'none';
-                        const app = document.getElementById('contenido-app');
-                        app.style.display = 'flex';
-                        setTimeout(() => app.style.opacity = '1', 50);
+                        document.getElementById('contenido-app').style.display = 'flex';
+                        setTimeout(() => document.getElementById('contenido-app').style.opacity = '1', 50);
                         cargarDatos();
                     }, 800);
                 } else {
@@ -183,8 +224,7 @@
         const inicio = new Date('2025-07-04T00:00:00');
         setInterval(() => {
             const dif = new Date() - inicio;
-            document.getElementById('reloj').innerHTML = 
-                `${Math.floor(dif/86400000)} Días : ${Math.floor((dif/3600000)%24)} Hrs : ${Math.floor((dif/60000)%60)} Min : ${Math.floor((dif/1000)%60)} Seg`;
+            document.getElementById('reloj').innerHTML = `${Math.floor(dif/86400000)} Días : ${Math.floor((dif/3600000)%24)} Hrs : ${Math.floor((dif/60000)%60)} Min : ${Math.floor((dif/1000)%60)} Seg`;
         }, 1000);
 
         // Actualizar UI Mascota
@@ -203,10 +243,8 @@
 
             btnJugar.disabled = false; btnComer.disabled = false;
 
-            if (datos.energia < 10) { 
-                cara = "😴"; 
-                btnJugar.disabled = true; btnComer.disabled = true; 
-            } else if (datos.higiene < 20) { cara = "🪰"; } 
+            if (datos.energia < 10) { cara = "😴"; btnJugar.disabled = true; btnComer.disabled = true; } 
+            else if (datos.higiene < 20) { cara = "🪰"; } 
             else if (datos.hambre > 80) { cara = "🥺"; }
             else if (datos.felicidad < 30) { cara = "😿"; }
             else if (datos.felicidad > 80 && datos.hambre < 40) { cara = "🥰"; }
@@ -214,7 +252,73 @@
             document.getElementById('cara-mascota').innerText = cara;
         }
 
-        // Cargar Base de Datos Inicial
+        // --- SISTEMA DE TIENDA E INVENTARIO ---
+        function abrirTienda() {
+            document.getElementById('tienda-monedas').innerText = misMonedas;
+            document.getElementById('modal-tienda').style.display = 'flex';
+            actualizarBotonesTienda();
+        }
+
+        function cerrarTienda() { document.getElementById('modal-tienda').style.display = 'none'; }
+
+        function actualizarBotonesTienda() {
+            // Revisa si ya lo tienes para cambiar el botón de "Comprar" a "Equipar"
+            const items = ['Parque', 'Océano', 'Galaxia'];
+            items.forEach(item => {
+                const btn = document.getElementById(`btn-item-${item}`);
+                if (miInventario.includes(`Fondo ${item}`)) {
+                    btn.innerText = "Equipar";
+                    btn.style.background = "transparent";
+                    btn.style.border = "1px solid #d4af37";
+                    btn.style.color = "#d4af37";
+                }
+            });
+        }
+
+        function aplicarFondo(estiloCss) {
+            document.getElementById('zona-mascota').style.background = estiloCss;
+            localStorage.setItem('fondo_guardado', estiloCss); // Guarda la decoración en el celular
+        }
+
+        async function comprarItem(nombreItem, tipo, precio, estiloCss) {
+            if (miInventario.includes(nombreItem)) {
+                // Si ya lo tiene, solo se lo pone
+                aplicarFondo(estiloCss);
+                cerrarTienda();
+                return;
+            }
+
+            if (misMonedas < precio) {
+                alert(`No tienes suficientes monedas. Te faltan ${precio - misMonedas} 🪙. ¡Acaricia al perrito!`);
+                return;
+            }
+
+            // Si no lo tiene y le alcanza, lo compra en el servidor
+            const form = new FormData(); 
+            form.append("nombre_item", nombreItem);
+            form.append("tipo", tipo);
+            form.append("precio", precio);
+
+            try {
+                const res = await fetch(`${API_URL}/comprar`, { method: 'POST', body: form });
+                const data = await res.json();
+                
+                if (data.status === "ok") {
+                    misMonedas = data.monedas_restantes;
+                    document.getElementById('txt-monedas').innerText = misMonedas;
+                    document.getElementById('tienda-monedas').innerText = misMonedas;
+                    miInventario.push(nombreItem);
+                    
+                    aplicarFondo(estiloCss);
+                    actualizarBotonesTienda();
+                    alert(`¡Felicidades! Compraste: ${nombreItem}`);
+                } else {
+                    alert(data.mensaje);
+                }
+            } catch (e) { alert("Error al procesar la compra."); }
+        }
+
+        // --- CARGA INICIAL ---
         async function cargarDatos() {
             try {
                 const res = await fetch(`${API_URL}/data_inicial`);
@@ -222,22 +326,27 @@
                 
                 document.getElementById('mostrar-estado').innerText = data.estado.emocion;
                 document.getElementById('count-extrano').innerText = data.estado.te_extrano;
-                document.getElementById('txt-monedas').innerText = data.estado.monedas;
+                
+                // Actualiza Memoria Local
+                misMonedas = data.estado.monedas;
+                document.getElementById('txt-monedas').innerText = misMonedas;
+                miInventario = data.inventario || [];
+                
                 procesarEstadoMascota(data.estado.pet);
                 
+                // Carga la decoración si ya había guardado una antes
+                const fondoGuardado = localStorage.getItem('fondo_guardado');
+                if (fondoGuardado) { aplicarFondo(fondoGuardado); }
+
                 const gal = document.getElementById('galeria-contenedor');
                 gal.innerHTML = '';
                 data.fotos.forEach(f => {
-                    gal.innerHTML += `
-                        <div class="foto-container">
-                            <img src="${f.url}" alt="${f.descripcion}" class="foto-item">
-                            <button class="btn-borrar" onclick="borrarFoto(${f.id})">❌</button>
-                        </div>`;
+                    gal.innerHTML += `<div class="foto-container"><img src="${f.url}" alt="${f.descripcion}" class="foto-item"><button class="btn-borrar" onclick="borrarFoto(${f.id})">❌</button></div>`;
                 });
             } catch (e) { document.getElementById('mostrar-estado').innerText = "Hubo un error al conectar con el servidor."; }
         }
 
-        // Corazón Pensando en Ti
+        // --- SISTEMA DE INTERACCIÓN ---
         async function teExtrano() {
             const btn = document.getElementById('btn-corazon');
             btn.style.transform = "scale(1.3)";
@@ -248,14 +357,13 @@
             await fetch(`${API_URL}/te-extrano`, { method: 'POST' });
         }
 
-        // Acariciar Mascota (Corazones y Monedas)
         let bloqueadorClick = false;
         async function acariciar(e) {
             if(bloqueadorClick) return;
             
             const zona = document.getElementById('zona-mascota');
             const corazon = document.createElement('div');
-            corazon.innerText = "❤️";
+            corazon.innerText = "🪙";
             corazon.className = "corazoncito";
             const rect = zona.getBoundingClientRect();
             corazon.style.left = `${e.clientX - rect.left - 10}px`;
@@ -271,36 +379,32 @@
             const data = await res.json();
             
             procesarEstadoMascota(data);
-            document.getElementById('txt-monedas').innerText = data.monedas;
+            misMonedas = data.monedas;
+            document.getElementById('txt-monedas').innerText = misMonedas;
         }
 
-        // Cuidar Mascota (Botones)
         async function cuidar(accion) {
             const form = new FormData(); form.append("accion", accion);
             const res = await fetch(`${API_URL}/cuidar-mascota`, { method: 'POST', body: form });
             const data = await res.json();
             procesarEstadoMascota(data);
-            document.getElementById('txt-monedas').innerText = data.monedas;
+            misMonedas = data.monedas;
+            document.getElementById('txt-monedas').innerText = misMonedas;
         }
 
-        // Subir Fotos de forma segura
         document.getElementById('formulario-foto').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn-subir');
             btn.innerText = "Subiendo..."; btn.disabled = true;
-            
             const form = new FormData();
             form.append("archivo", document.getElementById('archivo-foto').files[0]);
             form.append("descripcion", document.getElementById('desc-foto').value);
-            
             await fetch(`${API_URL}/subir-foto`, { method: 'POST', body: form });
-            
             document.getElementById('formulario-foto').reset();
             btn.innerText = "Guardar Momento"; btn.disabled = false;
             cargarDatos();
         });
 
-        // Borrar Foto
         async function borrarFoto(id) {
             if(confirm("¿Seguro que quieres borrar este recuerdo?")) {
                 await fetch(`${API_URL}/borrar-foto/${id}`, { method: 'DELETE' });
@@ -308,11 +412,9 @@
             }
         }
 
-        // Estados de Animo
         document.getElementById('form-estado').addEventListener('submit', (e) => {
             e.preventDefault();
-            const val = document.getElementById('input-estado').value;
-            enviarEstadoRapido(val);
+            enviarEstadoRapido(document.getElementById('input-estado').value);
             document.getElementById('input-estado').value = '';
         });
 
