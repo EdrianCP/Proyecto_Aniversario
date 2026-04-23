@@ -17,7 +17,7 @@
         h1, h2, h3 { color: #d4af37; margin-top: 0; text-shadow: 1px 1px 5px rgba(0,0,0,0.8); }
         .contador { font-size: 1.5rem; font-weight: bold; color: #e0e0e0; margin-bottom: 10px; }
         
-        input[type="text"], input[type="file"] { padding: 12px; border-radius: 5px; border: none; background: #333; color: white; width: 80%; margin-bottom: 15px; }
+        input[type="text"], input[type="file"], textarea { padding: 12px; border-radius: 5px; border: none; background: #333; color: white; width: 80%; margin-bottom: 15px; font-family: inherit; }
         button { background-color: #d4af37; color: #121212; padding: 10px 15px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; margin: 3px; }
         button:hover { transform: scale(1.05); background-color: #f0c842; }
         button:disabled { background-color: #555 !important; color: #888 !important; cursor: not-allowed; transform: none; border: none !important; }
@@ -48,8 +48,8 @@
         .etiqueta-monedas { font-size: 1.2rem; font-weight: bold; color: #ffd700; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 10px; border: 1px solid #ffd700; }
         .btn-tienda { background-color: #4CAF50; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; border: 1px solid #fff; box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); padding: 0; margin: 0; }
         
-        #modal-tienda { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .caja-tienda { background: #1a1a1a; padding: 25px; border-radius: 15px; border: 1px solid #4CAF50; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 0 30px rgba(76, 175, 80, 0.3); }
+        .modal-flotante { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .caja-modal { background: #1a1a1a; padding: 25px; border-radius: 15px; border: 1px solid #4CAF50; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 0 30px rgba(76, 175, 80, 0.3); max-height: 90vh; overflow-y: auto; }
         .item-tienda { background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         
         .galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; width: 90%; max-width: 1000px; margin-top: 20px; }
@@ -59,7 +59,8 @@
         .btn-borrar { position: absolute; top: 10px; right: 10px; background: rgba(255, 76, 76, 0.9); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; font-size: 1.2rem; cursor: pointer; display: none; z-index: 10; }
         .foto-container:hover .btn-borrar { display: block; }
         
-        .carta-bloqueada { background: linear-gradient(145deg, #1a1a1a, #2a2a2a); border: 1px solid #d4af37; border-radius: 10px; padding: 30px; margin-top: 40px; width: 90%; max-width: 600px; text-align: center; }
+        .carta-bloqueada { background: linear-gradient(145deg, #1a1a1a, #2a2a2a); border: 1px solid #d4af37; border-radius: 10px; padding: 40px; margin-top: 40px; width: 90%; max-width: 600px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .carta-bloqueada:hover { transform: translateY(-5px); border-color: #f0c842; }
     </style>
 </head>
 <body>
@@ -73,8 +74,8 @@
         </div>
     </div>
 
-    <div id="modal-tienda">
-        <div class="caja-tienda">
+    <div id="modal-tienda" class="modal-flotante">
+        <div class="caja-modal">
             <h2 style="color: #4CAF50; margin-top: 0;">🛒 Tienda</h2>
             <p style="color: #aaa; margin-bottom: 20px;">Monedas: <span id="tienda-monedas" style="color:#ffd700; font-weight:bold;">0</span> 🪙</p>
             
@@ -90,8 +91,22 @@
                 <div style="text-align: left;"><h4 style="margin: 0; color: #fff;">Fondo: Galaxia 🌌</h4></div>
                 <button id="btn-item-Galaxia" style="background: #9C27B0;" onclick="comprarItem('Fondo Galaxia', 'fondo', 50, 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(\'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=800&auto=format&fit=crop\')')">50 🪙</button>
             </div>
+            <button onclick="document.getElementById('modal-tienda').style.display='none'" style="margin-top:20px; background:transparent; border: 1px solid #ff4c4c; color:#ff4c4c; width: 100%;">Cerrar</button>
+        </div>
+    </div>
 
-            <button onclick="cerrarTienda()" style="margin-top:20px; background:transparent; border: 1px solid #ff4c4c; color:#ff4c4c; width: 100%;">Cerrar</button>
+    <div id="modal-admin-capsula" class="modal-flotante">
+        <div class="caja-modal" style="border-color: #d4af37;">
+            <h2 style="color: #d4af37; margin-top: 0;">🕵️‍♂️ Acceso Admin: Cápsula</h2>
+            <p style="color: #aaa; font-size: 0.9rem;">Escribe aquí la carta que ella verá el 4 de Julio de 2026.</p>
+            
+            <form id="form-admin-capsula">
+                <textarea id="texto-secreto" rows="8" placeholder="Escribe tu mensaje romántico aquí..." required style="width: 90%;"></textarea><br>
+                <p style="color: #fff; font-size: 0.9rem; text-align: left; margin-left: 5%;">Añadir foto secreta (Opcional):</p>
+                <input type="file" id="foto-secreta" accept="image/*"><br>
+                <button type="submit" id="btn-guardar-capsula" style="width: 100%; margin-top: 15px;">🔒 Sellar Cápsula en Base de Datos</button>
+            </form>
+            <button onclick="document.getElementById('modal-admin-capsula').style.display='none'" style="margin-top:15px; background:transparent; border: 1px solid #aaa; color:#aaa; width: 100%;">Cancelar</button>
         </div>
     </div>
 
@@ -123,12 +138,8 @@
                     <div class="etiqueta-monedas"><span id="txt-monedas">0</span> 🪙</div>
                     <button class="btn-tienda" onclick="abrirTienda()" title="Tienda">🛒</button>
                 </div>
-                
                 <h2 style="z-index: 2;">Nuestra Mascota</h2>
-                
-                <div class="mascota-fondo" id="zona-mascota">
-                    <div id="cara-mascota" class="cara-mascota" onclick="acariciar(event)">🐶</div>
-                </div>
+                <div class="mascota-fondo" id="zona-mascota"><div id="cara-mascota" class="cara-mascota" onclick="acariciar(event)">🐶</div></div>
                 <p id="texto-info-mascota" style="color: #e0e0e0; font-size: 0.9rem; font-weight: bold; z-index: 2; text-shadow: 1px 1px 4px #000;">¡Toca al perrito para ganar monedas!</p>
 
                 <div class="grid-barras">
@@ -165,21 +176,18 @@
             </form>
         </div>
 
-        <div class="carta-bloqueada">
-            <div style="font-size: 3rem;">🔒</div><h3 style="color: white;">Cápsula del Tiempo</h3>
-            <p style="color: #aaa;">Se abrirá el 4 de Julio de 2026</p>
+        <div class="carta-bloqueada" id="tarjeta-capsula" onclick="intentarAbrirCapsula()">
+            <div id="icono-capsula" style="font-size: 4rem; display: inline-block; transition: 0.2s;">🔒</div>
+            <h3 style="color: white; font-size: 2rem;">Cápsula del Tiempo</h3>
+            <p style="color: #aaa; font-size: 1.1rem;">Pulsa para intentar abrir</p>
         </div>
     </div>
 
     <script>
         const API_URL = "https://servidor-aniversario-suki.onrender.com";
-        const WS_URL = "wss://servidor-aniversario-suki.onrender.com/ws"; // EL CABLE TELEPÁTICO
+        const WS_URL = "wss://servidor-aniversario-suki.onrender.com/ws";
         const PIN_CORRECTO = "0407";
-        
-        let miInventario = []; 
-        let misMonedas = 0;
-        let perritoDurmiendo = false;
-        let socket; // Variable para el WebSocket
+        let miInventario = []; let misMonedas = 0; let perritoDurmiendo = false; let socket;
 
         document.getElementById('input-pin').addEventListener('input', function() {
             if (this.value === PIN_CORRECTO) {
@@ -188,12 +196,10 @@
                     document.getElementById('pantalla-bloqueo').style.display = 'none';
                     document.getElementById('contenido-app').style.display = 'flex';
                     setTimeout(() => document.getElementById('contenido-app').style.opacity = '1', 50);
-                    cargarDatos();
-                    conectarWebSocket(); // Encendemos la telepatía al iniciar sesión
+                    cargarDatos(); conectarWebSocket();
                 }, 800);
             } else if (this.value.length === 4) {
-                this.classList.add('error-anim');
-                document.getElementById('mensaje-error').style.display = 'block';
+                this.classList.add('error-anim'); document.getElementById('mensaje-error').style.display = 'block';
                 setTimeout(() => { this.classList.remove('error-anim'); this.value = ''; }, 400);
             }
         });
@@ -204,53 +210,92 @@
             document.getElementById('reloj').innerHTML = `${Math.floor(dif/86400000)} Días : ${Math.floor((dif/3600000)%24)} Hrs : ${Math.floor((dif/60000)%60)} Min : ${Math.floor((dif/1000)%60)} Seg`;
         }, 1000);
 
-        // --- SISTEMA WEBSOCKET ---
         function conectarWebSocket() {
             socket = new WebSocket(WS_URL);
-            
-            socket.onopen = function() {
-                document.getElementById('indicador-en-vivo').style.display = 'inline-block';
-            };
-
+            socket.onopen = function() { document.getElementById('indicador-en-vivo').style.display = 'inline-block'; };
             socket.onmessage = function(event) {
                 const mensaje = JSON.parse(event.data);
-                if (mensaje.tipo === "actualizacion") {
-                    // Si llega un aviso del servidor, recarga los datos sin hacer ruido
-                    cargarDatosSilencioso();
-                }
+                if (mensaje.tipo === "actualizacion") { cargarDatosSilencioso(); }
             };
-
-            socket.onclose = function() {
-                document.getElementById('indicador-en-vivo').style.display = 'none';
-                // Intenta reconectar automáticamente si el internet falla
-                setTimeout(conectarWebSocket, 3000);
-            };
+            socket.onclose = function() { document.getElementById('indicador-en-vivo').style.display = 'none'; setTimeout(conectarWebSocket, 3000); };
         }
 
-        // --- FUNCIONES DE MASCOTA Y TIENDA ---
+        // --- SISTEMA DE LA CÁPSULA (NUEVO) ---
+        async function intentarAbrirCapsula() {
+            try {
+                const res = await fetch(`${API_URL}/abrir-capsula`);
+                const data = await res.json();
+                
+                if (data.status === "bloqueado") {
+                    // Animación de Candado Cerrado
+                    const icono = document.getElementById('icono-capsula');
+                    icono.style.transform = "rotate(15deg)";
+                    setTimeout(() => icono.style.transform = "rotate(-15deg)", 100);
+                    setTimeout(() => icono.style.transform = "rotate(10deg)", 200);
+                    setTimeout(() => icono.style.transform = "rotate(0deg)", 300);
+                    alert(data.mensaje);
+                } else {
+                    // ¡ABIERTO! Modificamos el HTML de la tarjeta para revelar el secreto
+                    document.getElementById('tarjeta-capsula').style.cursor = "default";
+                    document.getElementById('tarjeta-capsula').onclick = null; // Quitamos el clic
+                    
+                    let htmlRevelado = `<div style="font-size: 4rem;">🔓</div><h3 style="color: #d4af37; font-size: 2rem;">¡Feliz Aniversario!</h3>`;
+                    if (data.data.foto_url) {
+                        htmlRevelado += `<img src="${data.data.foto_url}" style="width:100%; border-radius:10px; margin-top:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">`;
+                    }
+                    htmlRevelado += `<p style="color: white; white-space: pre-wrap; text-align: justify; margin-top: 25px; font-size: 1.1rem; line-height: 1.6; font-family: 'Segoe UI', Tahoma, sans-serif;">${data.data.mensaje_secreto}</p>`;
+                    
+                    document.getElementById('tarjeta-capsula').innerHTML = htmlRevelado;
+                }
+            } catch (e) { alert("El servidor del tiempo está dormido. Intenta de nuevo en unos segundos."); }
+        }
+
+        // Guardar desde el Panel Secreto Admin
+        document.getElementById('form-admin-capsula').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-guardar-capsula');
+            btn.innerText = "Encriptando..."; btn.disabled = true;
+            
+            const form = new FormData();
+            form.append("mensaje", document.getElementById('texto-secreto').value);
+            
+            const archivoInput = document.getElementById('foto-secreta');
+            if (archivoInput.files.length > 0) { form.append("archivo", archivoInput.files[0]); }
+            
+            await fetch(`${API_URL}/guardar-capsula`, { method: 'POST', body: form });
+            alert("¡Cápsula sellada con éxito en la base de datos!");
+            document.getElementById('modal-admin-capsula').style.display = 'none';
+            btn.innerText = "🔒 Sellar Cápsula en Base de Datos"; btn.disabled = false;
+        });
+
+        // Intercepción del Huevo de Pascua en la barra de Estado
+        document.getElementById('form-estado').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const txt = document.getElementById('input-estado').value;
+            if (txt === "0407-CAPSULA") {
+                document.getElementById('input-estado').value = '';
+                document.getElementById('modal-admin-capsula').style.display = 'flex';
+            } else {
+                enviarEstadoRapido(txt);
+                document.getElementById('input-estado').value = '';
+            }
+        });
+
+        // --- MASCOTA Y TIENDA (SIN CAMBIOS) ---
         function procesarEstadoMascota(datos) {
             if (perritoDurmiendo) return; 
-            
-            document.getElementById('barra-hambre').value = datos.hambre;
-            document.getElementById('barra-felicidad').value = datos.felicidad;
-            document.getElementById('barra-energia').value = datos.energia;
-            document.getElementById('barra-higiene').value = datos.higiene;
-            
+            document.getElementById('barra-hambre').value = datos.hambre; document.getElementById('barra-felicidad').value = datos.felicidad;
+            document.getElementById('barra-energia').value = datos.energia; document.getElementById('barra-higiene').value = datos.higiene;
             document.getElementById('barra-hambre').style.accentColor = datos.hambre > 70 ? "#ff4c4c" : "#d4af37";
             document.getElementById('barra-higiene').style.accentColor = datos.higiene < 30 ? "#8D6E63" : "#2196F3"; 
-
             let cara = "🐶"; 
-            const btnJugar = document.getElementById('btn-jugar');
-            const btnComer = document.getElementById('btn-comer');
-
+            const btnJugar = document.getElementById('btn-jugar'); const btnComer = document.getElementById('btn-comer');
             btnJugar.disabled = false; btnComer.disabled = false;
-
             if (datos.energia < 10) { cara = "😴"; btnJugar.disabled = true; btnComer.disabled = true; } 
             else if (datos.higiene < 20) { cara = "🪰"; } 
             else if (datos.hambre > 80) { cara = "🥺"; }
             else if (datos.felicidad < 30) { cara = "😿"; }
             else if (datos.felicidad > 80 && datos.hambre < 40) { cara = "🥰"; }
-            
             document.getElementById('cara-mascota').innerText = cara;
         }
 
@@ -258,13 +303,10 @@
             if (perritoDurmiendo) return;
             let barraEnergia = document.getElementById('barra-energia');
             if (barraEnergia.value >= 90) { alert("¡El perrito no tiene sueño ahorita!"); return; }
-
             perritoDurmiendo = true;
             document.getElementById('btn-comer').disabled = true; document.getElementById('btn-jugar').disabled = true;
             document.getElementById('btn-banar').disabled = true; document.getElementById('btn-dormir').disabled = true;
-            document.getElementById('cara-mascota').innerText = "😴";
-            document.getElementById('texto-info-mascota').innerText = "Cargando batería... 💤";
-
+            document.getElementById('cara-mascota').innerText = "😴"; document.getElementById('texto-info-mascota').innerText = "Cargando batería... 💤";
             let intervalo = setInterval(async () => {
                 let actual = parseInt(barraEnergia.value);
                 if (actual < 100) { barraEnergia.value = actual + 4; } 
@@ -274,15 +316,12 @@
                     document.getElementById('btn-dormir').disabled = false;
                     const form = new FormData(); form.append("accion", "dormir");
                     const res = await fetch(`${API_URL}/cuidar-mascota`, { method: 'POST', body: form });
-                    const data = await res.json();
-                    procesarEstadoMascota(data);
+                    const data = await res.json(); procesarEstadoMascota(data);
                 }
             }, 1000);
         }
 
         function abrirTienda() { document.getElementById('tienda-monedas').innerText = misMonedas; document.getElementById('modal-tienda').style.display = 'flex'; actualizarBotonesTienda(); }
-        function cerrarTienda() { document.getElementById('modal-tienda').style.display = 'none'; }
-        
         function actualizarBotonesTienda() {
             const items = ['Bosque', 'Océano', 'Galaxia'];
             items.forEach(item => {
@@ -292,64 +331,44 @@
                 }
             });
         }
-
         function aplicarFondo(estiloCss) { document.getElementById('tarjeta-mascota').style.backgroundImage = estiloCss; localStorage.setItem('fondo_guardado', estiloCss); }
-
         async function comprarItem(nombreItem, tipo, precio, estiloCss) {
-            if (miInventario.includes(nombreItem)) { aplicarFondo(estiloCss); cerrarTienda(); return; }
+            if (miInventario.includes(nombreItem)) { aplicarFondo(estiloCss); document.getElementById('modal-tienda').style.display = 'none'; return; }
             if (misMonedas < precio) { alert(`Te faltan ${precio - misMonedas} 🪙.`); return; }
             const form = new FormData(); form.append("nombre_item", nombreItem); form.append("tipo", tipo); form.append("precio", precio);
             try {
                 const res = await fetch(`${API_URL}/comprar`, { method: 'POST', body: form });
                 const data = await res.json();
                 if (data.status === "ok") {
-                    misMonedas = data.monedas_restantes;
-                    document.getElementById('txt-monedas').innerText = misMonedas;
-                    document.getElementById('tienda-monedas').innerText = misMonedas;
+                    misMonedas = data.monedas_restantes; document.getElementById('txt-monedas').innerText = misMonedas; document.getElementById('tienda-monedas').innerText = misMonedas;
                     miInventario.push(nombreItem); aplicarFondo(estiloCss); actualizarBotonesTienda();
                 } else { alert(data.mensaje); }
-            } catch (e) { alert("Error al procesar la compra."); }
+            } catch (e) {}
         }
 
-        // --- CARGAS Y COMUNICACIÓN ---
         async function cargarDatos() {
             try {
-                const res = await fetch(`${API_URL}/data_inicial`);
-                const data = await res.json();
-                document.getElementById('mostrar-estado').innerText = data.estado.emocion;
-                document.getElementById('count-extrano').innerText = data.estado.te_extrano;
-                misMonedas = data.estado.monedas;
-                document.getElementById('txt-monedas').innerText = misMonedas;
-                miInventario = data.inventario || [];
+                const res = await fetch(`${API_URL}/data_inicial`); const data = await res.json();
+                document.getElementById('mostrar-estado').innerText = data.estado.emocion; document.getElementById('count-extrano').innerText = data.estado.te_extrano;
+                misMonedas = data.estado.monedas; document.getElementById('txt-monedas').innerText = misMonedas; miInventario = data.inventario || [];
                 procesarEstadoMascota(data.estado.pet);
-                const fondoGuardado = localStorage.getItem('fondo_guardado');
-                if (fondoGuardado) { aplicarFondo(fondoGuardado); }
-                const gal = document.getElementById('galeria-contenedor');
-                gal.innerHTML = '';
-                data.fotos.forEach(f => {
-                    gal.innerHTML += `<div class="foto-container"><img src="${f.url}" alt="${f.descripcion}" class="foto-item"><button class="btn-borrar" onclick="borrarFoto(${f.id})">❌</button></div>`;
-                });
+                const fondoGuardado = localStorage.getItem('fondo_guardado'); if (fondoGuardado) { aplicarFondo(fondoGuardado); }
+                const gal = document.getElementById('galeria-contenedor'); gal.innerHTML = '';
+                data.fotos.forEach(f => { gal.innerHTML += `<div class="foto-container"><img src="${f.url}" alt="${f.descripcion}" class="foto-item"><button class="btn-borrar" onclick="borrarFoto(${f.id})">❌</button></div>`; });
             } catch (e) { document.getElementById('mostrar-estado').innerText = "Hubo un error al conectar con el servidor."; }
         }
 
-        // Carga sin parpadear la pantalla completa (ideal para WebSockets)
         async function cargarDatosSilencioso() {
             try {
-                const res = await fetch(`${API_URL}/data_inicial`);
-                const data = await res.json();
-                document.getElementById('mostrar-estado').innerText = data.estado.emocion;
-                document.getElementById('count-extrano').innerText = data.estado.te_extrano;
-                misMonedas = data.estado.monedas;
-                document.getElementById('txt-monedas').innerText = misMonedas;
-                miInventario = data.inventario || [];
+                const res = await fetch(`${API_URL}/data_inicial`); const data = await res.json();
+                document.getElementById('mostrar-estado').innerText = data.estado.emocion; document.getElementById('count-extrano').innerText = data.estado.te_extrano;
+                misMonedas = data.estado.monedas; document.getElementById('txt-monedas').innerText = misMonedas; miInventario = data.inventario || [];
                 procesarEstadoMascota(data.estado.pet);
-                // No tocamos la galería para que no parpadee si alguien la está mirando
             } catch (e) {} 
         }
 
         async function teExtrano() {
-            const btn = document.getElementById('btn-corazon');
-            btn.style.transform = "scale(1.3)"; setTimeout(() => btn.style.transform = "scale(1)", 200);
+            const btn = document.getElementById('btn-corazon'); btn.style.transform = "scale(1.3)"; setTimeout(() => btn.style.transform = "scale(1)", 200);
             const txt = document.getElementById('count-extrano'); txt.innerText = parseInt(txt.innerText) + 1;
             await fetch(`${API_URL}/te-extrano`, { method: 'POST' });
         }
@@ -357,18 +376,12 @@
         let bloqueadorClick = false;
         async function acariciar(e) {
             if(bloqueadorClick || perritoDurmiendo) return;
-            const zona = document.getElementById('zona-mascota');
-            const corazon = document.createElement('div');
-            corazon.innerText = "🪙"; corazon.className = "corazoncito";
-            const rect = zona.getBoundingClientRect();
-            corazon.style.left = `${e.clientX - rect.left - 10}px`; corazon.style.top = `${e.clientY - rect.top - 10}px`;
-            zona.appendChild(corazon);
-            setTimeout(() => corazon.remove(), 1000);
+            const zona = document.getElementById('zona-mascota'); const corazon = document.createElement('div'); corazon.innerText = "🪙"; corazon.className = "corazoncito";
+            const rect = zona.getBoundingClientRect(); corazon.style.left = `${e.clientX - rect.left - 10}px`; corazon.style.top = `${e.clientY - rect.top - 10}px`;
+            zona.appendChild(corazon); setTimeout(() => corazon.remove(), 1000);
             bloqueadorClick = true; setTimeout(() => bloqueadorClick = false, 500);
-            
             const form = new FormData(); form.append("accion", "acariciar");
             await fetch(`${API_URL}/cuidar-mascota`, { method: 'POST', body: form });
-            // Ya no procesamos los datos aquí, ¡el WebSocket lo hará por nosotros en milisegundos!
         }
 
         async function cuidar(accion) {
@@ -378,29 +391,15 @@
 
         document.getElementById('formulario-foto').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('btn-subir');
-            btn.innerText = "Subiendo..."; btn.disabled = true;
-            const form = new FormData();
-            form.append("archivo", document.getElementById('archivo-foto').files[0]);
-            form.append("descripcion", document.getElementById('desc-foto').value);
+            const btn = document.getElementById('btn-subir'); btn.innerText = "Subiendo..."; btn.disabled = true;
+            const form = new FormData(); form.append("archivo", document.getElementById('archivo-foto').files[0]); form.append("descripcion", document.getElementById('desc-foto').value);
             await fetch(`${API_URL}/subir-foto`, { method: 'POST', body: form });
-            document.getElementById('formulario-foto').reset();
-            btn.innerText = "Guardar Momento"; btn.disabled = false;
-            cargarDatos(); // Aquí sí recargamos todo para mostrar la foto nueva
+            document.getElementById('formulario-foto').reset(); btn.innerText = "Guardar Momento"; btn.disabled = false; cargarDatos();
         });
 
         async function borrarFoto(id) {
-            if(confirm("¿Seguro que quieres borrar este recuerdo?")) {
-                await fetch(`${API_URL}/borrar-foto/${id}`, { method: 'DELETE' });
-                cargarDatos();
-            }
+            if(confirm("¿Seguro que quieres borrar este recuerdo?")) { await fetch(`${API_URL}/borrar-foto/${id}`, { method: 'DELETE' }); cargarDatos(); }
         }
-
-        document.getElementById('form-estado').addEventListener('submit', (e) => {
-            e.preventDefault();
-            enviarEstadoRapido(document.getElementById('input-estado').value);
-            document.getElementById('input-estado').value = '';
-        });
 
         async function enviarEstadoRapido(txt) {
             document.getElementById('mostrar-estado').innerText = txt;
